@@ -1,0 +1,19 @@
+{
+  "name": "berntsen-neon-netlify-starter",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'Static site'",
+    "deploy": "netlify deploy --prod",
+    "fmt": "prettier -w ."
+  },
+  "dependencies": {
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.36.3",
+    "prettier": "^3.3.3"
+  }
+}

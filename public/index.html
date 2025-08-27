@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Berntsen Multiservice – Kontakt</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background:#0e0e0f; color:#f2f2f2; }
+    .wrap { max-width: 720px; margin: 40px auto; padding: 24px; background:#161618; border-radius: 16px; }
+    h1 { color:#ff7a00; margin-top:0; }
+    label { display:block; margin: 12px 0 6px; }
+    input, textarea, button { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #2a2a2c; background:#0f0f11; color:#fff; }
+    button { cursor: pointer; margin-top: 14px; background:#ff7a00; border: none; font-weight: 700; }
+    .ok { background:#0f2e12; color:#7dff9b; padding:10px 12px; border-radius:12px; margin-top:12px; display:none; }
+    .err { background:#2e0f0f; color:#ff9b7d; padding:10px 12px; border-radius:12px; margin-top:12px; display:none; }
+    small { color:#9ea0a6; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Kontakt Berntsen Multiservice</h1>
+    <p><small>Fyll ut skjemaet – så tar vi kontakt. Felter merket * er påkrevd.</small></p>
+    <form id="lead-form">
+      <label for="name">Navn *</label>
+      <input id="name" name="name" required />
+
+      <label for="email">E-post</label>
+      <input id="email" type="email" name="email" />
+
+      <label for="phone">Telefon</label>
+      <input id="phone" name="phone" />
+
+      <label for="message">Hva gjelder det?</label>
+      <textarea id="message" name="message" rows="5"></textarea>
+
+      <button type="submit">Send</button>
+      <div class="ok" id="ok">Takk! Vi har registrert henvendelsen din.</div>
+      <div class="err" id="err">Oops! Noe gikk galt. Prøv igjen.</div>
+    </form>
+    <p style="margin-top:22px"><small>E-post: norman@berntsen-multiservice.no · Telefon: 929 39 628</small></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('lead-form');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      ok.style.display = 'none';
+      err.style.display = 'none';
+
+      const payload = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        message: document.getElementById('message').value.trim(),
+        source: 'website'
+      };
+
+      try {
+        const res = await fetch('/.netlify/functions/lead', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error('Bad status');
+        const data = await res.json();
+        if (data.ok) {
+          ok.style.display = 'block';
+          form.reset();
+        } else {
+          throw new Error('Not ok');
+        }
+      } catch (e) {
+        err.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
